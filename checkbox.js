@@ -38,6 +38,14 @@ class CheckBox extends Component {
         }
     }
 
+    _renderText () {
+      return this.props.label.length > 0 ? (
+          <View style={styles.labelContainer}>
+            <Text numberOfLines={this.props.labelLines} style={[styles.label, this.props.labelStyle]}>{this.props.label}</Text>
+          </View>
+        ) : null
+    }
+
     render() {
         let container = (
             <View style={this.props.containerStyle || styles.container}>
@@ -58,13 +66,10 @@ class CheckBox extends Component {
           source = this.state.internalChecked ? this.props.checkedImage : this.props.uncheckedImage;
         }
 
-
         if (this.props.labelBefore) {
             container = (
                 <View style={this.props.containerStyle || [styles.container, styles.flexContainer]}>
-                    <View style={styles.labelContainer}>
-                        <Text numberOfLines={this.props.labelLines} style={[styles.label, this.props.labelStyle]}>{this.props.label}</Text>
-                    </View>
+                    {this._renderText()}
                     <Image
                     style={[styles.checkbox, this.props.checkboxStyle]}
                     source={source}/>
@@ -76,17 +81,17 @@ class CheckBox extends Component {
                     <Image
                     style={[styles.checkbox, this.props.checkboxStyle]}
                     source={source}/>
-                    <View style={styles.labelContainer}>
-                        <Text numberOfLines={this.props.labelLines} style={[styles.label, this.props.labelStyle]}>{this.props.label}</Text>
-                    </View>
+                    {this._renderText()}
                 </View>
             );
         }
 
-        return (
-            <TouchableHighlight onPress={this.onChange} underlayColor={this.props.underlayColor} style={styles.flexContainer}>
-                {container}
-            </TouchableHighlight>
+        return this.props.touchable ? (
+          <TouchableHighlight onPress={this.onChange} underlayColor={this.props.underlayColor} style={styles.flexContainer}>
+              { container }
+          </TouchableHighlight> 
+        ) : (
+          container
         );
     }
 }
@@ -122,7 +127,8 @@ CheckBox.propTypes = {
     checkedImage: PropTypes.number,
     uncheckedImage: PropTypes.number,
     underlayColor: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    touchable: PropTypes.bool
 };
 
 CheckBox.defaultProps = {
@@ -132,7 +138,8 @@ CheckBox.defaultProps = {
     checked: null,
     checkedImage: CB_ENABLED_IMAGE,
     uncheckedImage: CB_DISABLED_IMAGE,
-    underlayColor: 'white'
+    underlayColor: 'white',
+    touchable: true
 };
 
 module.exports = CheckBox;
